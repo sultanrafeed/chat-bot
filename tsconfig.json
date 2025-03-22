@@ -1,0 +1,20 @@
+{
+    "files": [],
+    "references": [
+      { "path": "./tsconfig.app.json" },
+      { "path": "C:\\Users\\Administrator\\New folder\\consultation-manager-bot\\tsconfig.app.json" }
+    ],
+    "compilerOptions": {
+      "baseUrl": ".",
+      "paths": {
+        "@/*": ["./src/*"]
+      },
+      "noImplicitAny": false,
+      "noUnusedParameters": false,
+      "skipLibCheck": true,
+      "allowJs": true,
+      "noUnusedLocals": false,
+      "strictNullChecks": false
+    }
+  }
+  

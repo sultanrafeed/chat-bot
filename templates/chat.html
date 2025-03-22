@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SELISE Chat Assistant</title>
+    <link rel="stylesheet" href="/static/css/chat.css">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-header">
+            <h2>SELISE Virtual Assistant</h2>
+            <div class="status-indicator online"></div>
+        </div>
+        
+        <div class="chat-messages" id="chatMessages">
+            <div class="bot-message">
+                <div class="message-content">
+                    <span class="timestamp"></span>
+                    <p>Hello! I'm SELISE virtual assistant. How can I help you today?</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="chat-input">
+            <input type="text" id="userInput" placeholder="Type your message..." 
+                   autocomplete="off" aria-label="Type your message">
+            <button id="sendButton" class="send-button">
+                <span class="send-icon">➤</span>
+            </button>
+            <div class="typing-indicator" id="typingIndicator">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            const CSRF_TOKEN = getCookie('csrftoken');
+            let isProcessing = false;
+
+            // Get CSRF token from cookies
+            function getCookie(name) {
+                const value = `; ${document.cookie}`;
+                const parts = value.split(`; ${name}=`);
+                if (parts.length === 2) return parts.pop().split(';').shift();
+            }
+
+            // Add message to chat
+            function addMessage(message, isUser = false) {
+                const timestamp = new Date().toLocaleTimeString([], { 
+                    hour: '2-digit', minute: '2-digit' 
+                });
+                
+                const messageHTML = `
+                    <div class="${isUser ? 'user' : 'bot'}-message">
+                        <div class="message-content">
+                            <span class="timestamp">${timestamp}</span>
+                            <p>${message}</p>
+                        </div>
+                    </div>`;
+                
+                $('#chatMessages').append(messageHTML);
+                scrollToBottom();
+            }
+
+            // Show typing indicator
+            function showTyping() {
+                $('#typingIndicator').addClass('active');
+                scrollToBottom();
+            }
+
+            // Hide typing indicator
+            function hideTyping() {
+                $('#typingIndicator').removeClass('active');
+            }
+
+            // Scroll to bottom of chat
+            function scrollToBottom() {
+                const container = document.getElementById('chatMessages');
+                container.scrollTop = container.scrollHeight;
+            }
+
+            // Handle server response
+            async function handleUserInput() {
+                if (isProcessing) return;
+                
+                const userInput = $('#userInput').val().trim();
+                if (!userInput) return;
+
+                try {
+                    isProcessing = true;
+                    addMessage(userInput, true);
+                    $('#userInput').val('');
+                    showTyping();
+
+                    const response = await $.ajax({
+                        url: '/get-response/',
+                        method: 'POST',
+                        headers: { 'X-CSRFToken': CSRF_TOKEN },
+                        data: { message: userInput },
+                        dataType: 'json'
+                    });
+
+                    hideTyping();
+                    addMessage(response.reply || "I'm sorry, I didn't understand that.");
+                } catch (error) {
+                    hideTyping();
+                    addMessage("Sorry, I'm having trouble connecting. Please try again later.");
+                    console.error('Chat error:', error);
+                } finally {
+                    isProcessing = false;
+                }
+            }
+
+            // Event listeners
+            $('#sendButton').click(handleUserInput);
+            $('#userInput').keypress(e => e.which === 13 && handleUserInput());
+            
+            // Initial scroll position
+            scrollToBottom();
+        })();
+    </script>
+</body>
+</html>

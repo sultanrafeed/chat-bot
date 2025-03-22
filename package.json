@@ -1,0 +1,40 @@
+{
+  "name": "selise-chatbot-frontend",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "lint": "eslint . --fix"
+  },
+  "dependencies": {
+    "@tanstack/react-query": "^5.56.2",
+    "axios": "^1.4.0",
+    "framer-motion": "^12.5.0",
+    "lucide-react": "^0.462.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.26.2",
+    "sonner": "^1.5.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.9.0",
+    "@tailwindcss/typography": "^0.5.15",
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "@typescript-eslint/eslint-plugin": "^8.0.1",
+    "@typescript-eslint/parser": "^8.0.1",
+    "@vitejs/plugin-react-swc": "^3.5.0",
+    "autoprefixer": "^10.4.20",
+    "eslint": "^9.9.0",
+    "eslint-plugin-react": "^7.32.2",
+    "eslint-plugin-react-hooks": "^5.1.0",
+    "postcss": "^8.4.47",
+    "shadcn-ui": "^2.4.0-canary.17",
+    "tailwindcss": "^3.4.11",
+    "typescript": "^5.5.3",
+    "vite": "^5.4.1"
+  }
+}

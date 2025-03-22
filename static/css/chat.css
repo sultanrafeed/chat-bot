@@ -1,0 +1,168 @@
+/* Main container styling */
+.chat-container {
+    max-width: 800px;
+    margin: 2rem auto;
+    background: #ffffff;
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+/* Header section */
+.chat-header {
+    background: #0052cc; /* SELISE brand blue */
+    color: white;
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-bottom: 2px solid #003d99;
+}
+
+.chat-header h2 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+/* Online status indicator */
+.status-indicator {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #00cc66;
+    box-shadow: 0 0 8px rgba(0, 204, 102, 0.3);
+}
+
+/* Chat messages area */
+.chat-messages {
+    height: 60vh;
+    padding: 1.5rem;
+    background: #f8f9fc;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+}
+
+/* Message bubbles */
+.bot-message, .user-message {
+    max-width: 75%;
+    padding: 0.8rem 1.2rem;
+    border-radius: 1.2rem;
+    margin: 0.5rem 0;
+    position: relative;
+}
+
+.bot-message {
+    background: white;
+    align-self: flex-start;
+    border: 1px solid #e0e4e9;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.user-message {
+    background: #0052cc;
+    color: white;
+    align-self: flex-end;
+}
+
+.message-content p {
+    margin: 0;
+    font-size: 1rem;
+    line-height: 1.5;
+}
+
+.timestamp {
+    display: block;
+    font-size: 0.75rem;
+    color: #6c757d;
+    margin-bottom: 0.5rem;
+}
+
+/* Input area */
+.chat-input {
+    display: flex;
+    gap: 1rem;
+    padding: 1.5rem;
+    background: white;
+    border-top: 1px solid #e9ecef;
+    position: relative;
+}
+
+#userInput {
+    flex: 1;
+    padding: 0.8rem 1.2rem;
+    border: 2px solid #e0e4e9;
+    border-radius: 2rem;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+}
+
+#userInput:focus {
+    outline: none;
+    border-color: #0052cc;
+}
+
+.send-button {
+    background: #0052cc;
+    color: white;
+    border: none;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.send-button:hover {
+    transform: scale(1.05);
+    background: #003d99;
+}
+
+/* Typing indicator */
+.typing-indicator {
+    display: none;
+    position: absolute;
+    bottom: 80px;
+    left: 30px;
+    padding: 0.8rem 1.2rem;
+    background: white;
+    border-radius: 1.2rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.typing-indicator.active {
+    display: flex;
+    gap: 6px;
+}
+
+.typing-indicator span {
+    width: 8px;
+    height: 8px;
+    background: #ced4da;
+    border-radius: 50%;
+    animation: typing 1.2s infinite ease;
+}
+
+@keyframes typing {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-4px); }
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .chat-container {
+        margin: 1rem;
+        border-radius: 12px;
+    }
+    
+    .chat-messages {
+        height: 50vh;
+        padding: 1rem;
+    }
+    
+    .bot-message, .user-message {
+        max-width: 85%;
+    }
+}
