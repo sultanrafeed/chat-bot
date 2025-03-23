@@ -1,126 +1,58 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SELISE Chat Assistant</title>
-    <link rel="stylesheet" href="/static/css/chat.css">
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Chat - SELISE Chatbot</title>
+  <!-- Tailwind CSS CDN -->
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <script>
+    async function sendMessage() {
+      const inputField = document.getElementById("chat-input");
+      const message = inputField.value.trim();
+      if (!message) return;
+      appendMessage("user", message);
+      inputField.value = "";
+      try {
+        const response = await fetch("{% url 'get_response' %}", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": "{{ csrf_token }}"
+          },
+          body: JSON.stringify({ userMessage: message })
+        });
+        const data = await response.json();
+        appendMessage("bot", data.response);
+      } catch (error) {
+        appendMessage("bot", "An error occurred. Please try again.");
+      }
+    }
+    
+    function appendMessage(sender, text) {
+      const chatLog = document.getElementById("chat-log");
+      const messageElem = document.createElement("div");
+      messageElem.className = sender === "user" 
+        ? "self-end bg-blue-100 text-blue-800 p-2 my-2 rounded max-w-xs"
+        : "self-start bg-green-100 text-green-800 p-2 my-2 rounded max-w-xs";
+      messageElem.textContent = text;
+      chatLog.appendChild(messageElem);
+      chatLog.scrollTop = chatLog.scrollHeight;
+    }
+  </script>
 </head>
-<body>
-    <div class="chat-container">
-        <div class="chat-header">
-            <h2>SELISE Virtual Assistant</h2>
-            <div class="status-indicator online"></div>
-        </div>
-        
-        <div class="chat-messages" id="chatMessages">
-            <div class="bot-message">
-                <div class="message-content">
-                    <span class="timestamp"></span>
-                    <p>Hello! I'm SELISE virtual assistant. How can I help you today?</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="chat-input">
-            <input type="text" id="userInput" placeholder="Type your message..." 
-                   autocomplete="off" aria-label="Type your message">
-            <button id="sendButton" class="send-button">
-                <span class="send-icon">➤</span>
-            </button>
-            <div class="typing-indicator" id="typingIndicator">
-                <span></span><span></span><span></span>
-            </div>
-        </div>
+<body class="bg-gray-50">
+  <div class="container mx-auto p-4">
+    <div class="flex justify-between items-center mb-4">
+      <h1 class="text-xl font-bold">SELISE Chatbot</h1>
+      <a href="{% url 'signout' %}" class="text-blue-600 hover:underline">Sign Out</a>
     </div>
-
-    <script>
-        (function() {
-            const CSRF_TOKEN = getCookie('csrftoken');
-            let isProcessing = false;
-
-            // Get CSRF token from cookies
-            function getCookie(name) {
-                const value = `; ${document.cookie}`;
-                const parts = value.split(`; ${name}=`);
-                if (parts.length === 2) return parts.pop().split(';').shift();
-            }
-
-            // Add message to chat
-            function addMessage(message, isUser = false) {
-                const timestamp = new Date().toLocaleTimeString([], { 
-                    hour: '2-digit', minute: '2-digit' 
-                });
-                
-                const messageHTML = `
-                    <div class="${isUser ? 'user' : 'bot'}-message">
-                        <div class="message-content">
-                            <span class="timestamp">${timestamp}</span>
-                            <p>${message}</p>
-                        </div>
-                    </div>`;
-                
-                $('#chatMessages').append(messageHTML);
-                scrollToBottom();
-            }
-
-            // Show typing indicator
-            function showTyping() {
-                $('#typingIndicator').addClass('active');
-                scrollToBottom();
-            }
-
-            // Hide typing indicator
-            function hideTyping() {
-                $('#typingIndicator').removeClass('active');
-            }
-
-            // Scroll to bottom of chat
-            function scrollToBottom() {
-                const container = document.getElementById('chatMessages');
-                container.scrollTop = container.scrollHeight;
-            }
-
-            // Handle server response
-            async function handleUserInput() {
-                if (isProcessing) return;
-                
-                const userInput = $('#userInput').val().trim();
-                if (!userInput) return;
-
-                try {
-                    isProcessing = true;
-                    addMessage(userInput, true);
-                    $('#userInput').val('');
-                    showTyping();
-
-                    const response = await $.ajax({
-                        url: '/get-response/',
-                        method: 'POST',
-                        headers: { 'X-CSRFToken': CSRF_TOKEN },
-                        data: { message: userInput },
-                        dataType: 'json'
-                    });
-
-                    hideTyping();
-                    addMessage(response.reply || "I'm sorry, I didn't understand that.");
-                } catch (error) {
-                    hideTyping();
-                    addMessage("Sorry, I'm having trouble connecting. Please try again later.");
-                    console.error('Chat error:', error);
-                } finally {
-                    isProcessing = false;
-                }
-            }
-
-            // Event listeners
-            $('#sendButton').click(handleUserInput);
-            $('#userInput').keypress(e => e.which === 13 && handleUserInput());
-            
-            // Initial scroll position
-            scrollToBottom();
-        })();
-    </script>
+    <div id="chat-log" class="flex flex-col border rounded p-4 h-96 overflow-y-auto bg-white"></div>
+    <div class="mt-4 flex">
+      <input type="text" id="chat-input" placeholder="Type your message..." class="flex-grow border rounded-l p-2 focus:outline-none">
+      <button onclick="sendMessage()" class="bg-blue-600 text-white px-4 rounded-r hover:bg-blue-700">Send</button>
+    </div>
+  </div>
 </body>
 </html>
