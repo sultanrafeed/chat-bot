@@ -1,16 +1,19 @@
-agent-model-name: llama3-groq-70b-8192-tool-use-preview
-error-model-name: llama-3.1-70b-versatile
+selise-agent-model: llama-3.3-70b-versatile
+error-model-name: llama-3.1-8b-instant
+openai_api_key: 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
 
 database:
-    host: localhost
-    user: root
-    password: 
-    database: db
-    table: mytable
+  host: localhost
+  user: root
+  password:
+  database: db
+  table: mytable
 
 google-firestore:
-    PROJECT_ID: appointment-schedule-manager
+    PROJECT_ID: selise-chatbot
     SESSION_ID: user1_session_new
     COLLECTION_NAME: chat_history
 
 whatsapp-bot-number: whatsapp:+14155238886
+
+groq_api_key: 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
